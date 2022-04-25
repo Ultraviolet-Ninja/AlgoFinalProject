@@ -19,7 +19,7 @@ public class Main {
 
         graph.addEdge("C", "F", 6.0);
         graph.addEdge("C", "E", 1.0);
-        graph.addEdge("C", "D", 5);
+        graph.addEdge("C", "D", 5.0);
 
         graph.addEdge("D", "F", 7.0);
 

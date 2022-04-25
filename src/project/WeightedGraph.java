@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +44,6 @@ public abstract class WeightedGraph<V extends Comparable<V>> {
         if (graph.isEmpty() || !graph.containsKey(startNode))
             return null;
         int graphSize = graph.size();
-
         Map<V, WeightedEdge<V>> spanningTree = new HashMap<>(graphSize);
         PriorityQueue<WeightedEdge<V>> queue = new PriorityQueue<>(WEIGHT_COMPARATOR);
 
