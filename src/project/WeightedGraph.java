@@ -41,39 +41,28 @@ public abstract class WeightedGraph<V extends Comparable<V>> {
     }
 
     //TODO - Determine that graph is fully connected
-    public List<WeightedEdge<V>> primsAlgorithm() {
-        if (graph.isEmpty())
+    public List<WeightedEdge<V>> primsAlgorithm(V startNode) {
+        if (graph.isEmpty() || !graph.containsKey(startNode))
             return null;
-        V node = pickRandomNode();
-        Map<V, WeightedEdge<V>> spanningTree = new HashMap<>(graph.size());
+        int graphSize = graph.size();
+
+        Map<V, WeightedEdge<V>> spanningTree = new HashMap<>(graphSize);
         PriorityQueue<WeightedEdge<V>> queue = new PriorityQueue<>(WEIGHT_COMPARATOR);
 
-        spanningTree.put(node, null);
-        queue.addAll(graph.get(node));
+        spanningTree.put(startNode, null);
+        queue.addAll(graph.get(startNode));
 
         while (!queue.isEmpty()) {
             WeightedEdge<V> currentEdge = queue.poll();
-            if (spanningTree.containsKey(currentEdge.destination))
-                continue;
+            if (spanningTree.containsKey(currentEdge.destination)) continue;
 
             spanningTree.put(currentEdge.destination, currentEdge);
             queue.addAll(graph.get(currentEdge.destination));
 
-            if (spanningTree.size() == graph.size()) break;
+            if (spanningTree.size() == graphSize) break;
         }
 
         return new ArrayList<>(spanningTree.values());
-    }
-
-    private V pickRandomNode() {
-        int randomIndex = (int)(Math.random() * graph.size());
-
-        Iterator<V> iterator = graph.keySet().iterator();
-        V node = iterator.next();
-        while (randomIndex-- != 1) {
-            node = iterator.next();
-        }
-        return node;
     }
 
     @Override

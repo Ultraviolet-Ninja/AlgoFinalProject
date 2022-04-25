@@ -5,7 +5,7 @@ public class Main {
         WeightedGraph<String> graph = new WeightedGraphQ<>();
         setupVideoGraph(graph);
 
-        System.out.println();
+        graph.primsAlgorithm("A").forEach(System.out::println);
 
     }
 
@@ -19,11 +19,12 @@ public class Main {
 
         graph.addEdge("C", "F", 6.0);
         graph.addEdge("C", "E", 1.0);
+        graph.addEdge("C", "D", 5);
 
         graph.addEdge("D", "F", 7.0);
 
         graph.addEdge("E", "F", 8.0);
 
-        graph.addEdge("F", "G", 8.0);
+        graph.addEdge("F", "G", 9.0);
     }
 }
