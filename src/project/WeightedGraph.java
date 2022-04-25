@@ -1,14 +1,17 @@
 package project;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.PriorityQueue;
+import java.util.Set;
 import java.util.function.Supplier;
 
 public abstract class WeightedGraph<V extends Comparable<V>> {
@@ -39,9 +42,8 @@ public abstract class WeightedGraph<V extends Comparable<V>> {
         return true;
     }
 
-    //TODO - Determine that graph is fully connected
     public List<WeightedEdge<V>> primsAlgorithm(V startNode) {
-        if (graph.isEmpty() || !graph.containsKey(startNode))
+        if (graph.isEmpty() || !graph.containsKey(startNode) || isNotFullyConnected())
             return null;
         int graphSize = graph.size();
         Map<V, WeightedEdge<V>> spanningTree = new HashMap<>(graphSize);
@@ -61,6 +63,29 @@ public abstract class WeightedGraph<V extends Comparable<V>> {
         }
 
         return new ArrayList<>(spanningTree.values());
+    }
+
+    private boolean isNotFullyConnected() {
+        V start = graph.keySet()
+                .iterator()
+                .next();
+        int size = graph.size();
+        Set<V> allNodes = new HashSet<>();
+        ArrayDeque<WeightedEdge<V>> deque = new ArrayDeque<>(graph.get(start));
+
+        allNodes.add(start);
+        while (!deque.isEmpty()) {
+            V destinationNode = deque.poll().destination;
+            if (allNodes.contains(destinationNode))
+                continue;
+
+            allNodes.add(destinationNode);
+            deque.addAll(graph.get(destinationNode));
+            if (allNodes.size() == size)
+                return false;
+        }
+
+        return allNodes.size() != size;
     }
 
     @Override
