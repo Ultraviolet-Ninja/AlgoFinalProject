@@ -25,21 +25,25 @@ public abstract class WeightedGraph<V extends Comparable<V>> {
         this.collectionSupplier = collectionSupplier;
     }
 
-    public boolean addVertex(V vertex) {
+    public void addVertex(V vertex) {
         if (graph.containsKey(vertex))
-            return false;
+            return;
 
         graph.put(vertex, collectionSupplier.get());
-        return true;
     }
 
-    public boolean addEdge(V source, V destination, double weight) throws IllegalArgumentException {
+    public void addEdge(V source, V destination, double weight) throws IllegalArgumentException {
         addVertex(source);
         addVertex(destination);
 
-        graph.get(source).add(new WeightedEdge<>(source, destination, weight));
-        graph.get(destination).add(new WeightedEdge<>(destination, source, weight));
-        return true;
+        WeightedEdge<V> firstEdge = new WeightedEdge<>(source, destination, weight);
+        WeightedEdge<V> secondEdge = new WeightedEdge<>(destination, source, weight);
+
+        if (!graph.get(source).contains(firstEdge))
+            graph.get(source).add(firstEdge);
+
+        if (!graph.get(destination).contains(secondEdge))
+            graph.get(destination).add(secondEdge);
     }
 
     public List<WeightedEdge<V>> primsAlgorithm(V startNode) {
@@ -106,7 +110,7 @@ public abstract class WeightedGraph<V extends Comparable<V>> {
 
         @Override
         public String toString() {
-            return source + " - " + destination + " Weight: " + weight;
+            return String.format("%s - %s Weight: %.2f", source, destination, weight);
         }
     }
 }

@@ -4,20 +4,49 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CoordinateTest {
-    public static void main(String[] args) {
+    private static final String ANSI_RESET = "\u001B[0m", ANSI_GREEN = "\u001B[32m",
+            ANSI_YELLOW = "\u001B[33m";
 
+    private static final double TO_MILLISECONDS = 1_000_000.0, TO_SECONDS = 1000.0;
+    private static final int SECONDS_CONVERSION = 60;
+
+    public static void main(String[] args) {
+        WeightedGraph<Coordinates> coordinateQueueGraph = new WeightedGraphQ<>();
+        WeightedGraph<Coordinates> coordinateSetGraph = new WeightedGraphS<>();
+
+        generateGraph(coordinateQueueGraph);
+        generateGraph(coordinateSetGraph);
+
+        Coordinates testCoord = new Coordinates("C", 6,0);
+
+        long queueStartTime = System.nanoTime();
+        coordinateQueueGraph.primsAlgorithm(testCoord);
+        long queueStopTime = System.nanoTime();
+
+
+        long setStartTime = System.nanoTime();
+        var resultingList = coordinateSetGraph.primsAlgorithm(testCoord);
+        long setStopTime = System.nanoTime();
+
+        System.out.print("Graph with Priority Queue: ");
+        printTime(queueStopTime - queueStartTime);
+        System.out.print("Graph with Tree Set: ");
+        printTime(setStopTime - setStartTime);
+
+        System.out.println();
+
+        resultingList.forEach(System.out::println);
     }
 
-    private static void generateFirstGraph(WeightedGraph<Coordinates> graph) {
-        int[][] coordinatePairArray = new int[][]{{2, 4}, {10, 5}, {12, 15}, {3, 11}, {2, 15}, {1, 9}, {9, 12},
-                {13, 12}, {0, 2}, {3, 14}, {4, 4}, {3, 14}, {1, 14}, {1, 12}, {5, 12}, {4, 1}, {3, 2}, {1, 6},
-                {12, 3}, {12, 0}, {5, 5}, {3, 8}, {2, 7}, {8, 11}, {13, 15}, {10, 14}};
+    private static void generateGraph(WeightedGraph<Coordinates> graph) {
+        int[][] coordinatePairArray = new int[][]{{14, 14}, {3, 6}, {6, 0}, {4, 5}, {14, 1}, {15, 14}, {15, 14},
+                {12, 13}, {11, 11}, {0, 5}, {11, 8}, {7, 13}, {9, 4}, {0, 10}, {0, 13}};
 
         List<Coordinates> coordinatesList = generateCoordinates(coordinatePairArray);
 
         for (Coordinates first : coordinatesList) {
             for (Coordinates second : coordinatesList) {
-                if (first != second) {
+                if (!first.equals(second)) {
                     graph.addEdge(first, second, first.distanceTo(second));
                 }
             }
@@ -33,5 +62,22 @@ public class CoordinateTest {
             coordinates.add(new Coordinates(String.valueOf(letter), pair[0], pair[1]));
         }
         return coordinates;
+    }
+
+    private static void printTime(long timeTaken) {
+        double toMillis = timeTaken / TO_MILLISECONDS;
+        System.out.print(ANSI_YELLOW);
+        if (toMillis < TO_SECONDS) {
+            System.out.printf("%,.02f ms\n", toMillis);
+        } else if (toMillis < TO_SECONDS * SECONDS_CONVERSION) {
+            toMillis /= TO_SECONDS;
+            System.out.printf("%,.03f sec\n", toMillis);
+        } else {
+            int totalSeconds = (int) (toMillis / TO_SECONDS);
+            int minutes = totalSeconds / SECONDS_CONVERSION;
+            int remainingSeconds = totalSeconds % SECONDS_CONVERSION;
+            System.out.printf("%d:%d\n", minutes, remainingSeconds);
+        }
+        System.out.print(ANSI_RESET);
     }
 }
