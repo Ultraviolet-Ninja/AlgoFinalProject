@@ -50,23 +50,25 @@ public abstract class WeightedGraph<V extends Comparable<V>> {
         if (graph.isEmpty() || !graph.containsKey(startNode) || isNotFullyConnected())
             return null;
         int graphSize = graph.size();
-        Map<V, WeightedEdge<V>> spanningTree = new HashMap<>(graphSize);
+        Map<V, WeightedEdge<V>> spanningTree = new HashMap<>((int) (graphSize / 0.75));
         PriorityQueue<WeightedEdge<V>> queue = new PriorityQueue<>(WEIGHT_COMPARATOR);
 
         spanningTree.put(startNode, null);
         queue.addAll(graph.get(startNode));
 
-        while (!queue.isEmpty()) {
-            WeightedEdge<V> currentEdge = queue.poll();
-            if (spanningTree.containsKey(currentEdge.destination)) continue;
+        //E
+        while (!queue.isEmpty()) { // 1
+            WeightedEdge<V> currentEdge = queue.poll(); //log n
+            if (spanningTree.containsKey(currentEdge.destination)) continue; //1
 
-            spanningTree.put(currentEdge.destination, currentEdge);
-            queue.addAll(graph.get(currentEdge.destination));
+            spanningTree.put(currentEdge.destination, currentEdge); //1
+            if (spanningTree.size() == graphSize)//1
+                return new ArrayList<>(spanningTree.values()); //n
 
-            if (spanningTree.size() == graphSize) break;
+            queue.addAll(graph.get(currentEdge.destination)); // E log(n)
         }
 
-        return new ArrayList<>(spanningTree.values());
+        return new ArrayList<>(spanningTree.values()); //n
     }
 
     private boolean isNotFullyConnected() {
