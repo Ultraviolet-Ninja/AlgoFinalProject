@@ -67,6 +67,7 @@ public abstract class WeightedGraph<V extends Comparable<V>> {
                 return new ArrayList<>(spanningTree.values()); //n
 
             edgeQueue.addAll(graph.get(currentEdge.destination)); // E log(n)
+//            edgeQueue.removeIf(edge -> spanningTree.containsKey(edge.destination));
         }
 
         return new ArrayList<>(spanningTree.values()); //n
@@ -77,17 +78,17 @@ public abstract class WeightedGraph<V extends Comparable<V>> {
                 .iterator()
                 .next();
         int size = graph.size();
-        Set<V> allNodes = new HashSet<>();
-        ArrayDeque<WeightedEdge<V>> deque = new ArrayDeque<>(graph.get(start));
+        Set<V> allNodes = new HashSet<>((int) ((size + 1) * 1.25));
+        ArrayDeque<WeightedEdge<V>> edgeDeque = new ArrayDeque<>(graph.get(start));
 
         allNodes.add(start);
-        while (!deque.isEmpty()) {
-            V destinationNode = deque.poll().destination;
+        while (!edgeDeque.isEmpty()) {
+            V destinationNode = edgeDeque.poll().destination;
             if (allNodes.contains(destinationNode))
                 continue;
 
             allNodes.add(destinationNode);
-            deque.addAll(graph.get(destinationNode));
+            edgeDeque.addAll(graph.get(destinationNode));
             if (allNodes.size() == size)
                 return false;
         }
