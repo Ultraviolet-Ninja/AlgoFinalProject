@@ -52,21 +52,21 @@ public abstract class WeightedGraph<V extends Comparable<V>> {
 
         int graphSize = graph.size();
         Map<V, WeightedEdge<V>> spanningTree = new HashMap<>((int) ((graphSize + 1) * 1.25));
-        PriorityQueue<WeightedEdge<V>> queue = new PriorityQueue<>(WEIGHT_COMPARATOR);
+        PriorityQueue<WeightedEdge<V>> edgeQueue = new PriorityQueue<>(WEIGHT_COMPARATOR);
 
         spanningTree.put(startNode, null);
-        queue.addAll(graph.get(startNode));
+        edgeQueue.addAll(graph.get(startNode));
 
         //E
-        while (!queue.isEmpty()) { // 1
-            WeightedEdge<V> currentEdge = queue.poll(); //log n
+        while (!edgeQueue.isEmpty()) { // 1
+            WeightedEdge<V> currentEdge = edgeQueue.poll(); //log n
             if (spanningTree.containsKey(currentEdge.destination)) continue; //1
 
             spanningTree.put(currentEdge.destination, currentEdge); //1
             if (spanningTree.size() == graphSize)//1
                 return new ArrayList<>(spanningTree.values()); //n
 
-            queue.addAll(graph.get(currentEdge.destination)); // E log(n)
+            edgeQueue.addAll(graph.get(currentEdge.destination)); // E log(n)
         }
 
         return new ArrayList<>(spanningTree.values()); //n
