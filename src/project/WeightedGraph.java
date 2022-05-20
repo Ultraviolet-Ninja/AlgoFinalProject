@@ -49,8 +49,9 @@ public abstract class WeightedGraph<V extends Comparable<V>> {
     public List<WeightedEdge<V>> primsAlgorithm(V startNode) {
         if (graph.isEmpty() || !graph.containsKey(startNode) || isNotFullyConnected())
             return null;
+
         int graphSize = graph.size();
-        Map<V, WeightedEdge<V>> spanningTree = new HashMap<>((int) (graphSize / 0.75));
+        Map<V, WeightedEdge<V>> spanningTree = new HashMap<>((int) ((graphSize + 1) * 1.25));
         PriorityQueue<WeightedEdge<V>> queue = new PriorityQueue<>(WEIGHT_COMPARATOR);
 
         spanningTree.put(startNode, null);

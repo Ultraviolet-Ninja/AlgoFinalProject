@@ -39,19 +39,19 @@ public class CoordinateTest {
         printTime(queueStopTime - queueStartTime);
         System.out.print("Graph with Tree Set: ");
         printTime(setStopTime - setStartTime);
-        System.out.print("Graph with Custom Backing: ");
+        System.out.print("Graph with Linked Hash Set: ");
         printTime(customStopTime - customStartTime);
 
         System.out.println();
 
         resultingList.forEach(System.out::println);
 
-        double mimimumWeight = resultingList.stream()
+        double minimumWeight = resultingList.stream()
                 .filter(Objects::nonNull)
                 .mapToDouble(WeightedGraph.WeightedEdge::weight)
                 .sum();
 
-        System.out.printf("%.2f", mimimumWeight);
+        System.out.printf("Minimum Weight: %.2f", minimumWeight);
     }
 
     private static void generateGraph(WeightedGraph<Coordinates> graph) {
